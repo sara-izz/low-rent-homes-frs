@@ -56,29 +56,32 @@ source("./FRS_tools/compare_LIPR_plots.R")
 source("./FRS_tools/compare_LIPR_plots_refine.R")
 
 flag.shared.ownership <- function (data_table){
-  shared_thresh <- read.csv("./shared_onwership_201415thresholds.csv", stringsAsFactors = FALSE)
+  shared_thresh <- read.csv("./shared_ownership_13141415thresholds_1.csv", header = TRUE, 
+                            colClasses = c("double", "double", "double", "character"), stringsAsFactors = FALSE)
   shared_thresh <- data.table(shared_thresh)
   
-  shared_keycols = c("GVTREGN")
-  shared_cols = c("GVTREGN", "shared", "shared_deposit" )
+  #return(shared_thresh)
+   shared_keycols = c("GVTREGN", "year")
+   shared_cols = c("GVTREGN", "shared", "shared_deposit", "year" )
   
-  setkeyv(data_table, shared_keycols)
-  setkeyv(shared_thresh, shared_keycols)
+   setkeyv(data_table, shared_keycols)
+   setkeyv(shared_thresh, shared_keycols)
+
+   data_table <- merge(data_table , shared_thresh[ , .SD, .SDcols = shared_cols], by = shared_keycols, all.x = TRUE)
+
+   data_table[ , aff_shared_noincben := ifelse( hh_grossinc_noincben >= shared, 1, 0 )]
   
-  data_table <- merge(data_table , shared_thresh[ , .SD, .SDcols = shared_cols], by = shared_keycols, all.x = TRUE)
+   data_table[ , cant_shareddep := ifelse( (TOTCAPB3 < (shared_deposit - 1000)) & (ADDMON == 2 | behind_debts==1), 1, 0 )]
   
-  data_table[ , aff_shared_noincben := ifelse( hh_grossinc_noincben >= shared, 1, 0 )]
-  
-  data_table[ , cant_shareddep := ifelse( (bu_savings < (shared_deposit - 1000)) & (ADDMON == 2 | behind_debts==1), 1, 0 )]
-  
-  #flag for shared ownership situation
-  data_table[ , affanddep_shared := 0]
-  data_table[ , affanddep_shared := ifelse(aff_shared_noincben==1 & cant_shareddep==1, 1 , 0)]
-  data_table[ , affanddep_shared := ifelse(aff_shared_noincben==1 & cant_shareddep==0, 2 , affanddep_shared)]
-  data_table[ , affanddep_shared := ifelse(aff_shared_noincben==0 , 0 , affanddep_shared)]
+   #flag for shared ownership situation
+   data_table[ , affanddep_shared := 0]
+   data_table[ , affanddep_shared := ifelse(aff_shared_noincben==1 & cant_shareddep==1, 1 , 0)]
+   data_table[ , affanddep_shared := ifelse(aff_shared_noincben==1 & cant_shareddep==0, 2 , affanddep_shared)]
+   data_table[ , affanddep_shared := ifelse(aff_shared_noincben==0 , 0 , affanddep_shared)]
   
   
-  return(data_table)
+   return(data_table)
+
 }
 
 
@@ -94,48 +97,37 @@ l <- list(dt_1314, dt_1415)
 dt_1315 <- rbindlist(l, fill = TRUE)
 rm(l)
 
-#Prep 1415 data set ####
-dt_1415 <- calculate.logical.flags(dt_1415, "1415")
-dt_1415 <- calculate.weights(dt_1415, 1)
-dt_1415 <- tidy.tenure(dt_1415)
-#Calculate equivalisation weights (according to HBAI spec)
-dt_1415<- calculate.equivalise(dt_1415)
-#calculate income, including equivalised
-dt_1415 <- calculate.household.incomes(dt_1415, "FRS", TRUE)
-dt_1415 <- flag.shared.ownership(dt_1415)
-dt_1415 <- tidy.regions(dt_1415, "1415")
-
-dt_1415[ , not_1stbenu := ifelse(BENUNIT >1 , 1, 0)]
-dt_1415[ , multiple_benu := ifelse( (sum(not_1stbenu) > 0), 1, 0 ), by = .(SERNUM, year) ]
-
-
-#remove households from sample with shared status and lodgers
-dt1415_noshare <- dt_1415[ (has_lodger == 0 & HHSTAT == 1), ]
-
-
-#Append AHC Minimum Income Standard for households - only works for 1 benefit unit households atm
-
-dt1415_noshare_1bu <- dt1415_noshare[ multiple_benu == 0, ]
-
-dt1415_noshare_1bu <- append.mis(dt1415_noshare_1bu, 
-                                 "./MIS_2015.csv")
-
-#Add for if AHC income is less than AHC MIS
-dt1415_noshare_1bu[ , under_ahc_mis := ifelse(hh_gross_ahc < ahc_mis_15*52, 1, 0)]
-
-
 #Prep 1315 data set ####
 dt_1315 <- calculate.logical.flags(dt_1315, "1315")
-dt_1315 <- calculate.weights(dt_1315, 2)
+dt_1315 <- calculate.weights(dt_1315, 1)
 dt_1315 <- tidy.tenure(dt_1315)
 #Calculate equivalisation weights (according to HBAI spec)
-dt_1315 <- calculate.equivalise(dt_1315)
+dt_1315<- calculate.equivalise(dt_1315)
 #calculate income, including equivalised
 dt_1315 <- calculate.household.incomes(dt_1315, "FRS", TRUE)
 dt_1315 <- flag.shared.ownership(dt_1315)
 dt_1315 <- tidy.regions(dt_1315, "1315")
 
-#JAM definition flags
+dt_1315[ , not_1stbenu := ifelse(BENUNIT >1 , 1, 0)]
+dt_1315[ , multiple_benu := ifelse( (sum(not_1stbenu) > 0), 1, 0 ), by = .(SERNUM, year) ]
+
+
+#remove households from sample with shared status and lodgers
+dt1315_noshare <- dt_1315[ (has_lodger == 0 & HHSTAT == 1), ]
+
+
+#Append AHC Minimum Income Standard for households - only works for 1 benefit unit households atm
+
+dt1315_noshare_1bu <- dt1315_noshare[ multiple_benu == 0, ]
+
+dt1315_noshare_1bu <- append.mis(dt1315_noshare_1bu, 
+                                 "./MIS_2015.csv")
+
+#Add for if AHC income is less than AHC MIS
+dt1315_noshare_1bu[ , under_ahc_mis := ifelse(hh_gross_ahc < ahc_mis_15*52, 1, 0)]
+
+
+#LIPR definition flags
 #more than 20% of household's gross income from benefits (excluding tax credits) - same as Resolution Foundation definition
 dt_1315[ , over20gross_allben := ifelse(((HBENINC - HHTXCRED )/(HHINC)) > 0.2, 1, 0)]
 

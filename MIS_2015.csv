@@ -1,13 +1,25 @@
-Family type,FAMTYPBU,BUKIDS,ahc_mis_15
-single,6,0,175.8
-couple,4,0,302.3
-pen_single,2,0,168.21
-pen_couple,1,0,244.35
-lonep_1,5,5,273.92
-lonep_2,5,6,366.91
-lonep_3,5,7,469.6
-lone parent 4,5,8,523.08
-couple_1,3,1,374.79
-couple_2,3,2,461.51
-couple_3,3,3,570.51
-couple_4,3,4,623.99
+Family type,FAMTYPBU,BUKIDS,ahc_mis,year
+single,6,0,175.8,1415
+couple,4,0,302.3,1415
+pen_single,2,0,168.21,1415
+pen_couple,1,0,244.35,1415
+lonep_1,5,5,273.92,1415
+lonep_2,5,6,366.91,1415
+lonep_3,5,7,469.6,1415
+lone parent 4,5,8,523.08,1415
+couple_1,3,1,374.79,1415
+couple_2,3,2,461.51,1415
+couple_3,3,3,570.51,1415
+couple_4,3,4,623.99,1415
+single,6,0,175.0601269,1314
+couple,4,0,300.6825075,1314
+pen_single,2,0,167.5564011,1314
+pen_couple,1,0,243.2888017,1314
+lonep_1,5,5,273.9991999,1314
+lonep_2,5,6,366.3257325,1314
+lonep_3,5,7,468.4630108,1314
+lone parent 4,5,8,521.7291013,1314
+couple_1,3,1,373.7355425,1314
+couple_2,3,2,459.576884,1314
+couple_3,3,3,568.0370846,1314
+couple_4,3,4,621.303175,1314

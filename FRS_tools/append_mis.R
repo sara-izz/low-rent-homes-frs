@@ -12,8 +12,8 @@ append.mis <- function(data_table, mis_file){
   data_table[ (FAMTYPBU == 6 |  FAMTYPBU == 4 |  FAMTYPBU == 2 |  FAMTYPBU == 1) , BUKIDS := 0]
   
   
-  mis_keycols = c("FAMTYPBU", "BUKIDS")
-  MIS_cols = c("FAMTYPBU", "BUKIDS", "ahc_mis_15")
+  mis_keycols = c("FAMTYPBU", "BUKIDS", "year")
+  MIS_cols = c("FAMTYPBU", "BUKIDS", "ahc_mis", "year")
   
   setkeyv(data_table, mis_keycols)
   setkeyv(MIS, mis_keycols)
