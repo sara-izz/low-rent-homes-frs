@@ -50,7 +50,7 @@ make.household.plots <- function(my_design, my_dt, subset, results_dir, my_regio
   write.csv( t_grossinc_earneq, file = paste0(results_dir, "/hh_grossinc_earneq_percentiles.csv"))
   
   #Calculate some income means
-  
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc", p_title = "hh_grossinc_mean", region = "GVTREGN", p_type = "none")
   
   # Age
   my_design <- update(my_design, HDAGE = factor(HDAGE))

@@ -2,7 +2,7 @@
 #To plot on subset, create subset of main survey design then call function
 # NB: 'variable' must be factor; use update(my_design, factor) before using this function
 
-plot.survey.grpdregion <- function(my_design, results_dir, variable, var_levels, var_labels, p_title = "title", svy_fun = svymean, region = "GVTREGN", p_type = "point"){
+plot.survey.grpdregion <- function(my_design, results_dir, variable, var_levels = NULL, var_labels = NULL, p_title = "title", svy_fun = svymean, region = "GVTREGN", p_type = "point"){
   
   ftable(svyby(formula = as.formula(paste("~", variable)), by = as.formula(paste("~", region)), 
                design = my_design, FUN = svy_fun, na.rm = TRUE))
@@ -32,9 +32,11 @@ plot.survey.grpdregion <- function(my_design, results_dir, variable, var_levels,
 
   l <- list(t_variable, t_total)
   t_variable <- rbindlist(l, fill = TRUE)
-  t_variable$category <- factor( t_variable$category, levels = var_levels,
-                                 labels = var_labels)
-
+  
+  if(!is.null(var_levels)){
+    t_variable$category <- factor( t_variable$category, levels = var_levels,
+                                   labels = var_labels)
+  }
   #write csv only if plot not needed
   if(p_type == "none"){
     write.csv( t_variable, file = paste0(results_dir, "/",p_title, ".csv"))
