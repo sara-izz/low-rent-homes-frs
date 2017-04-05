@@ -105,9 +105,9 @@ calculate.household.incomes <- function(data_table, survey, equivalise){
     data_table[ (year == '0708'), bu_savings_1415 := TOTCAPB3 * (99.98/82.27)]
   }
   
-  data_table[ , housing_cost_gross := (housing_cost*52)/hh_grossinc ]
+  data_table[ , housing_cost_gross := (GBHSCOST*52)/hh_grossinc ]
   #without hb
-  data_table[ , housing_cost_gnohb := (housing_cost*52)/hh_grossinc_nohb ]
+  data_table[ , housing_cost_gnohb := (GBHSCOST*52)/hh_grossinc_nohb ]
   #earned income
-  data_table[ , housing_cost_earn := (housing_cost*52)/hh_grossinc_earn ]
+  data_table[ , housing_cost_earn := (GBHSCOST*52)/hh_grossinc_earn ]
 }

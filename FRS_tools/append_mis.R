@@ -3,7 +3,8 @@
 
 append.mis <- function(data_table, mis_file){
   
-  mis <- read.csv(mis_file, stringsAsFactors = FALSE)
+  mis <- read.csv(mis_file, header = TRUE, 
+                  colClasses = c("character", "integer", "integer", "double", "character"), stringsAsFactors = FALSE)
   MIS <- data.table(mis)
   
   #Re-code missing FAMTYPBU and BUKIDS in main dataset

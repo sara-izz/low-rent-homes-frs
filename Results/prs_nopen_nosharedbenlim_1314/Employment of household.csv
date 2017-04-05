@@ -1,0 +1,41 @@
+"","region","category","svy_fun","SE"
+"1","North","1+ self employed",0.110674119694738,0.0400723010795185
+"2","North","Sing/couple all FT",0.229314499933057,0.0512790563248617
+"3","North","Couple, 1 FT, 1 PT",0,0
+"4","North","Couple, 1 FT, 1 not working",0.116456352925425,0.0415177321043868
+"5","North","No FT, 1+ PT",0.330700227607444,0.0546534809017743
+"6","North","Workless, head/spouse aged 60+",0.0412454813228009,0.0237064908740486
+"7","North","Workless, head/spouse unemployed",0.020317311554425,0.0143652805314596
+"8","North","Workless, inactive",0.15129200696211,0.0376314880305757
+"9","West","1+ self employed",0.133790972808708,0.0416787857883806
+"10","West","Sing/couple all FT",0.302099800053415,0.0633736218643537
+"11","West","Couple, 1 FT, 1 PT",0.0170062871290702,0.0168929745761195
+"12","West","Couple, 1 FT, 1 not working",0.0989410771129734,0.0403154851082705
+"13","West","No FT, 1+ PT",0.218013960169485,0.0475918331338982
+"14","West","Workless, head/spouse aged 60+",0.011253311389737,0.0112433201596947
+"15","West","Workless, head/spouse unemployed",0.0945523578538585,0.0785759689368483
+"16","West","Workless, inactive",0.124342233482752,0.0387644587997268
+"17","East","1+ self employed",0.182473478086757,0.0448840419286509
+"18","East","Sing/couple all FT",0.305251440633675,0.0539630862827428
+"19","East","Couple, 1 FT, 1 PT",0.010344055222594,0.0103091980413803
+"20","East","Couple, 1 FT, 1 not working",0.0955263997393624,0.0340005804171544
+"21","East","No FT, 1+ PT",0.20820465482485,0.0411263710380121
+"22","East","Workless, head/spouse aged 60+",0.00864719577006876,0.00863276766561127
+"23","East","Workless, head/spouse unemployed",0.0165070487541658,0.0116468082013541
+"24","East","Workless, inactive",0.173045726968527,0.0541585917542451
+"25","London and South East","1+ self employed",0.192582391185985,0.0427697342583729
+"26","London and South East","Sing/couple all FT",0.301205696267029,0.0437031184544288
+"27","London and South East","Couple, 1 FT, 1 PT",0.059824779518595,0.0383583459811455
+"28","London and South East","Couple, 1 FT, 1 not working",0.149088812734202,0.0287277122741871
+"29","London and South East","No FT, 1+ PT",0.197869868657429,0.0308200607929204
+"30","London and South East","Workless, head/spouse aged 60+",0,0
+"31","London and South East","Workless, head/spouse unemployed",0.0245885172061388,0.0114461982086573
+"32","London and South East","Workless, inactive",0.0748399344306208,0.0199146758997952
+"33","England","1+ self employed",0.166645077287751,0.0239729083807297
+"34","England","Sing/couple all FT",0.290694087403599,0.0268107898923114
+"35","England","Couple, 1 FT, 1 PT",0.0326204386872767,0.018390385590251
+"36","England","Couple, 1 FT, 1 not working",0.124065035221848,0.0177590274696674
+"37","England","No FT, 1+ PT",0.224828230895069,0.0208454753583698
+"38","England","Workless, head/spouse aged 60+",0.0103655727306113,0.00469979564610562
+"39","England","Workless, head/spouse unemployed",0.0352605749006777,0.0165839184116975
+"40","England","Workless, inactive",0.115520982873168,0.0173084702257826

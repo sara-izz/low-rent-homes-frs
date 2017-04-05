@@ -1,0 +1,51 @@
+"","region","category","svy_fun","SE"
+"1","North","Full-time",0.0195760466348702,0.0193840195437809
+"2","North","Part-time",0.0371489136195019,0.0214546817188955
+"3","North","FT self-employed",0,0
+"4","North","PT self-employed",0,0
+"5","North","Unemployed",0.144398516163222,0.0453977085797262
+"6","North","Student",0.0152729199788023,0.0151893349149769
+"7","North","Family home",0.346666666666667,0.0678437205494957
+"8","North","Disabled",0.374149443561208,0.0686249742542497
+"9","North","Retired",0,0
+"10","North","Other",0.0627874933757287,0.0308050507673818
+"11","West","Full-time",0.111549460772491,0.0557393574791353
+"12","West","Part-time",0,0
+"13","West","FT self-employed",0,0
+"14","West","PT self-employed",0,0
+"15","West","Unemployed",0,0
+"16","West","Student",0.0993522378803018,0.0560300824892184
+"17","West","Family home",0.304086414223202,0.0784683256114907
+"18","West","Disabled",0.425093891051924,0.084970855351167
+"19","West","Retired",0,0
+"20","West","Other",0.0599179960720808,0.0442277902608433
+"21","East","Full-time",0.0140474616119315,0.014080091692498
+"22","East","Part-time",0,0
+"23","East","FT self-employed",0,0
+"24","East","PT self-employed",0,0
+"25","East","Unemployed",0.0821541400337962,0.0411643477818037
+"26","East","Student",0.070487106017192,0.0399668876995878
+"27","East","Family home",0.530703107780472,0.088799044059297
+"28","East","Disabled",0.302608184556609,0.077282672609173
+"29","East","Retired",0,0
+"30","East","Other",0,0
+"31","London and South East","Full-time",0.0117604104613847,0.0117835352546503
+"32","London and South East","Part-time",0.0204558119871635,0.0203177258334297
+"33","London and South East","FT self-employed",0,0
+"34","London and South East","PT self-employed",0,0
+"35","London and South East","Unemployed",0.199119890851092,0.0821728538330042
+"36","London and South East","Student",0.0740502315571014,0.0374224728550342
+"37","London and South East","Family home",0.243836353504103,0.0566982369616499
+"38","London and South East","Disabled",0.33268317992275,0.0807471100056427
+"39","London and South East","Retired",0,0
+"40","London and South East","Other",0.118094121716405,0.0473842492363694
+"41","England","Full-time",0.0323607443402593,0.0128150723619754
+"42","England","Part-time",0.0173605440499924,0.00904457571298922
+"43","England","FT self-employed",0,0
+"44","England","PT self-employed",0,0
+"45","England","Unemployed",0.123067584098802,0.0322587894099663
+"46","England","Student",0.0607403344539317,0.018426836410805
+"47","England","Family home",0.344665653916907,0.0385641532071643
+"48","England","Disabled",0.354960573631324,0.0397063601284294
+"49","England","Retired",0,0
+"50","England","Other",0.0668445655087835,0.0194741633709285

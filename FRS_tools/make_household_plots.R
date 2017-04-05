@@ -1,22 +1,56 @@
 #Wrapper function that spits out plots and tables of households characteristics
 #Needs all data table prep functions to be run first and data table and survey design of the sub group to be made
+source("./FRS_tools/calculate_percentile.R")
+
 make.household.plots <- function(my_design, my_dt, subset, results_dir, my_region = "GVTREGN") {
 
-  #dir.create(results_dir)
+  #This should work but doesn't :/ - dir.create(results_dir)
+  
+  #Number of group by all regions
+  t_regions<- as.data.frame(svytotal(~GVTREGN, design = my_design, ci = TRUE, na.rm = TRUE))
+  write.csv( t_regions, file = paste0(results_dir, "/number_by_region.csv"))
+  
+  #incomes
   inc_p <- ggplot(my_dt[ ], 
-                  aes(x = hh_grossinc_nohb, weight = grossweight)) +
+                  aes(x = hh_grossinc, weight = grossweight)) +
     #geom_freqpoly( aes(group = factor(aff_shared_noincben)))
     geom_freqpoly() + 
     theme( legend.position = "top", panel.background = element_rect(fill = "white"),
            panel.grid.major = element_line(colour = "grey85")) +
-    ggtitle("Gross household income - HB: ") +
+    ggtitle("Gross household income: ") +
     xlim(-100, 80000)
-  ggsave(filename = paste0(results_dir,"/Gross household income minus HB.png"), plot = inc_p)
+  ggsave(filename = paste0(results_dir,"/Gross household income.png"), plot = inc_p)
   
-  t_income<- as.data.frame(svyby(~hh_grossinc_nohb, by = as.formula(paste("~", my_region)), design = my_design,
-                                  FUN = svyquantile,
-                                  quantiles = c(0.1, 0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9), ci = TRUE, na.rm = TRUE))
-  write.csv( t_income, file = paste0(results_dir, "/household_income_percentiles.csv"))
+
+  t_grossinc <- calculate.percentile.thresholds(my_dt, ~hh_grossinc, ~GVTREGN, "10")
+  write.csv( t_grossinc, file = paste0(results_dir, "/hh_grossinc_percentiles.csv"))
+ 
+  t_grossincnoincben <- calculate.percentile.thresholds(my_dt, ~hh_grossinc_noincben, ~GVTREGN, "10") 
+  write.csv( t_grossincnoincben, file = paste0(results_dir, "/hh_grossinc_noincben_percentiles.csv"))
+  
+  t_grossinc_earn<- calculate.percentile.thresholds(my_dt, ~hh_grossinc_earn, ~GVTREGN, "10")
+  write.csv( t_grossinc_earn, file = paste0(results_dir, "/hh_grossinc_earn_percentiles.csv"))
+
+  t_grossinc_nohb<- calculate.percentile.thresholds(my_dt, ~hh_grossinc_nohb, ~GVTREGN, "10")
+  write.csv( t_grossinc_nohb, file = paste0(results_dir, "/hh_grossinc_nohb_percentiles.csv"))
+  
+  t_grossinc_grp <- calculate.percentile.thresholds(my_dt, ~hh_grossinc, ~grpd_region1, "10")
+  write.csv( t_grossinc_grp, file = paste0(results_dir, "/hh_grossinc_percentiles_grpdreg1.csv"))
+  
+  t_grossincnoincben_grp <- calculate.percentile.thresholds(my_dt, ~hh_grossinc_noincben, ~grpd_region1, "10") 
+  write.csv( t_grossincnoincben_grp, file = paste0(results_dir, "/hh_grossinc_noincben_percentiles_grpdreg1.csv"))
+  
+  t_grossincnohb_grp <- calculate.percentile.thresholds(my_dt, ~hh_grossinc_nohb, ~grpd_region1, "10")
+  write.csv( t_grossinc_grp, file = paste0(results_dir, "/hh_grossincnohb_percentiles_grpdreg1.csv"))
+  
+  t_grossinceq <- calculate.percentile.thresholds(my_dt, ~hh_grossinc_eq, ~GVTREGN, "10") 
+  write.csv( t_grossinceq, file = paste0(results_dir, "/hh_grossinceq_percentiles.csv"))
+  
+  t_grossinc_earneq<- calculate.percentile.thresholds(my_dt, ~hh_grossinc_earn_eq, ~GVTREGN, "10")
+  write.csv( t_grossinc_earneq, file = paste0(results_dir, "/hh_grossinc_earneq_percentiles.csv"))
+  
+  #Calculate some income means
+  
   
   # Age
   my_design <- update(my_design, HDAGE = factor(HDAGE))
@@ -46,19 +80,19 @@ make.household.plots <- function(my_design, my_dt, subset, results_dir, my_regio
                                                              "Workless, head/spouse unemployed", "Workless, inactive" ), 
                                               p_title = "Employment of household", region = my_region, p_type = "hbar")
   
-  #SELFDEMP of head of households for inactive households
-  plot.survey.grpdregion(my_design = subset(my_design, ECOBU == 8), results_dir, "SELFDEMP", var_levels = c("SELFDEMP1", "SELFDEMP2", "SELFDEMP3", "SELFDEMP4", "SELFDEMP5",
-                                                                                                           "SELFDEMP6", "SELFDEMP7", "SELFDEMP8", "SELFDEMP9", "SELFDEMP10"),
-                         var_labels = c("Full-time", "Part-time", "FT self-employed", "PT self-employed",
-                                        "Unemployed", "Student", "Family home", "Disabled", "Retired", "Other"), 
-                         p_title = "Self-reported situation, inactive", region = my_region)
+  # #SELFDEMP of head of households for inactive households
+  # plot.survey.grpdregion(my_design = subset(my_design, ECOBU == 8), results_dir, "SELFDEMP", var_levels = c("SELFDEMP1", "SELFDEMP2", "SELFDEMP3", "SELFDEMP4", "SELFDEMP5",
+  #                                                                                                          "SELFDEMP6", "SELFDEMP7", "SELFDEMP8", "SELFDEMP9", "SELFDEMP10"),
+  #                        var_labels = c("Full-time", "Part-time", "FT self-employed", "PT self-employed",
+  #                                       "Unemployed", "Student", "Family home", "Disabled", "Retired", "Other"), 
+  #                        p_title = "Self-reported situation, inactive", region = my_region)
   
   #ILO employment of head of household
   my_design <- update(my_design, DVIL04A = factor(DVIL04A))
   plot.survey.grpdregion(my_design, results_dir, "DVIL04A", var_levels = c("DVIL04A1", "DVIL04A2", "DVIL04A3", "DVIL04A4"),
-                         var_labels = c("Employed", "Family worker", "Unemployed", "Inactive"), 
+                         var_labels = c("Employed", "Family worker", "Unemployed", "Inactive"),
                          p_title = "HRP employment (ILO)", region = my_region)
-  
+
   
   
   # School age kids
@@ -66,6 +100,22 @@ make.household.plots <- function(my_design, my_dt, subset, results_dir, my_regio
   plot.survey.grpdregion(my_design, results_dir, "has_kids16", var_levels = c("has_kids160", "has_kids161"),
                          var_labels = c("No school age kids", "Has school age kids"), 
                          p_title = "Has school age kids", region = my_region)
+  
+  # Number of bedrooms needed
+  my_design <- update(my_design, bedrooms_needed = factor(bedrooms_needed))
+  plot.survey.grpdregion(my_design, results_dir, "bedrooms_needed", 
+                         var_levels = c("bedrooms_needed1", "bedrooms_needed2", "bedrooms_needed3", "bedrooms_needed4", 
+                                        "bedrooms_needed5", "bedrooms_needed6"),
+                         var_labels = c("1", "2", "3", "4", "5", "6"), 
+                         p_title = "Number of bedrooms needed", region = my_region)
+  
+  # Number of bedrooms needed
+  my_design <- update(my_design, FAMTYPBU = factor(FAMTYPBU))
+  plot.survey.grpdregion(my_design, results_dir, "FAMTYPBU", 
+                         var_levels = c("FAMTYPBU0", "FAMTYPBU1", "FAMTYPBU2", "FAMTYPBU3", "FAMTYPBU4", 
+                                        "FAMTYPBU5", "FAMTYPBU6"),
+                         var_labels = c("Other", "Pen couple", "Pen single", "Couple + kids", "Couple", "Lone parent", "Single"), 
+                         p_title = "Family type", region = my_region)
   
   # Single parents
   my_design <- update(my_design, single_parent = factor(single_parent))
@@ -104,10 +154,10 @@ make.household.plots <- function(my_design, my_dt, subset, results_dir, my_regio
   write.csv( t_savings, file = paste0(results_dir, "/household_savings_percentiles.csv"))
   write.csv( t_nosavings, file = paste0(results_dir, "/household_nosavings.csv"))
   
-  # Can save £10 a month?
+  # Can save ?10 a month?
   my_design <- update(my_design, ADDMON = factor(ADDMON))
   plot.survey.grpdregion(my_design, results_dir, "ADDMON", var_levels = c("ADDMON1", "ADDMON2", "ADDMON3", "ADDMON4"),
                          var_labels = c("Do this", "Like to but can't afford", "Don't want to",  "Does not apply" ),
-                         p_title = "Can save £10 a month", region = my_region)
+                         p_title = "Can save Â£10 a month", region = my_region)
   
 }
