@@ -178,9 +178,64 @@ make.household.plots(my_design = subset(des1315_nosharenopen, grpd_tenure == 1 &
                      "PRS, no pensioner HRP, can't afford shared ownership", 
                      results_dir = "./Results/prs_nopen_noshared_1415", my_region = "grpd_region1" )
 
-#check sample size
-t_samplesize <- dt1315_noshare_1bu_nopen[grpd_tenure == 1 & aff_shared_noincben ==0 & year == "1415", .N, by=.(GVTREGN)]
-write.csv( t_samplesize, file = "./Results/prs_nopen_noshared_1415/subsample_size.csv")
+# Additional can't afford shared ownership stats
+des1315_nosharenopen <- update(des1315_nosharenopen, BURDEN = factor(BURDEN))
+plot.survey.grpdregion(my_design = subset(des1315_nosharenopen, 
+                                          aff_shared_noincben ==0 & grpd_tenure == 1 & year == "1415"), 
+                       "./Results/prs_nopen_noshared_1415", "BURDEN", 
+                       var_levels = c("BURDEN1", "BURDEN2", "BURDEN3"),
+                       var_labels = c("Heavy burden", "Slight burden", "Not a burden"),
+                       p_title = "Housing costs a burden", region = "grpd_region1")
+
+#no savings all england
+svymean(~(TOTCAPB3==0), design = subset(des1315_nosharenopen, 
+                                          aff_shared_noincben ==0 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+svytotal(~(TOTCAPB3==0), design = subset(des1315_nosharenopen, 
+                                        aff_shared_noincben ==0 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+#Behind on rent
+svymean(~(DEBTFRE1==1 |DEBTFRE1==2), design = subset(des1315_nosharenopen, 
+                                        aff_shared_noincben ==0 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+
+#Behind on utilities
+
+svymean(~(DEBTFRE2==1 |DEBTFRE2==2), design = subset(des1315_nosharenopen, 
+                                                     aff_shared_noincben ==0 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+
+
+#Behind on other loan repayments
+svymean(~(DEBTFRE3==1 |DEBTFRE3==2), design = subset(des1315_nosharenopen, 
+                                                     aff_shared_noincben ==0 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+
+#Additional CAN afford shared ownership stats
+svyquantile(~TOTCAPB3, design = subset(des1315_nosharenopen, 
+                                       aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), 
+            quantiles = 0.5, na.rm = TRUE, ci = TRUE)
+
+#Behind on rent
+svymean(~(DEBTFRE1==1 |DEBTFRE1==2), design = subset(des1315_nosharenopen, 
+                                                     aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+svytotal(~(DEBTFRE1==1 |DEBTFRE1==2), design = subset(des1315_nosharenopen, 
+                                                     aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+
+#Behind on utilities
+
+svymean(~(DEBTFRE2==1 |DEBTFRE2==2), design = subset(des1315_nosharenopen, 
+                                                     aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+svytotal(~(DEBTFRE2==1 |DEBTFRE2==2), design = subset(des1315_nosharenopen, 
+                                                      aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+
+
+#Behind on other loan repayments
+svymean(~(DEBTFRE3==1 |DEBTFRE3==2), design = subset(des1315_nosharenopen, 
+                                                     aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+svytotal(~(DEBTFRE3==1 |DEBTFRE3==2), design = subset(des1315_nosharenopen, 
+                                                      aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+
+#Ability to save �10 a month
+des1315_nosharenopen <- update(des1315_nosharenopen, ADDMON = factor(ADDMON))
+svymean(~ADDMON, design = subset(des1315_nosharenopen, 
+                                                     aff_shared_noincben ==1 & grpd_tenure == 1 & year == "1415"), na.rm = TRUE)
+
 
 #Characteristics by grouped region for 2013/14
 make.household.plots(my_design = subset(des1315_nosharenopen, grpd_tenure == 1 & aff_shared_noincben ==0  & year == "1314"), 
@@ -244,7 +299,7 @@ write.csv( t_samplesize, file = "./Results/prs_nopen_nosharedbenlim_1314/subsamp
 make.household.plots(my_design = subset(des1315_nosharenopen, 
                                         grpd_tenure == 1 & aff_shared_noincben ==0 & hrp_nowork == FALSE & year == "1415"), 
                      my_dt = dt1315_noshare_1bu_nopen[ grpd_tenure == 1 & aff_shared_noincben ==0 
-                                                       & over20grossnohb_nohbben == 0 & year == "1415"], 
+                                                       & hrp_nowork == FALSE & year == "1415"], 
                      "PRS, no pensioner HRP, can't afford shared ownership", 
                      results_dir = "./Results/prs_nopen_nosharedhrpwork_1415", my_region = "grpd_region1" )
 
@@ -274,9 +329,43 @@ t_samplesize <- dt1315_noshare_1bu_nopen[grpd_tenure == 1 & aff_shared_noincben 
 write.csv( t_samplesize, file = "./Results/prs_nopen_nosharedhrpwork_1314/subsample_size_grpdregion1.csv")
 
 
+
+
+
+#Characteristics by region - Renting households who can't afford shared ownership and households is not workless ####
+# This is the definition used to calculate typical incomes for LIPR##
+#check sample size
+t_samplesize <- dt1315_noshare_1bu_nopen[grpd_tenure == 1 & aff_shared_noincben ==0 & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 & year == "1415",
+                                         .N, by=.(GVTREGN)]
+write.csv( t_samplesize, file = "./Results/prs_nopen_nosharednotworkless_1415/subsample_size.csv")
+
+t_samplesize <- dt1315_noshare_1bu_nopen[grpd_tenure == 1 & aff_shared_noincben ==0 & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 & year == "1415",
+                                         .N, by=.(grpd_region1)]
+write.csv( t_samplesize, file = "./Results/prs_nopen_nosharednotworkless_1415/subsample_size_grpdregion1.csv")
+
+#Characteristics by grouped region for 2014/15
+make.household.plots(my_design = subset(des1315_nosharenopen, 
+                                        grpd_tenure == 1 & aff_shared_noincben ==0 & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 & year == "1415"), 
+                     my_dt = dt1315_noshare_1bu_nopen[ grpd_tenure == 1 & aff_shared_noincben ==0 
+                                                       & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 & year == "1415"], 
+                     "PRS, no pensioner HRP, can't afford shared ownership", 
+                     results_dir = "./Results/prs_nopen_nosharednotworkless_1415", my_region = "grpd_region1" )
+
+#Characteristics by grouped region for 2013/14
+make.household.plots(my_design = subset(des1315_nosharenopen, 
+                                        grpd_tenure == 1 & aff_shared_noincben ==0 & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 & year == "1314"), 
+                     my_dt = dt1315_noshare_1bu_nopen[ grpd_tenure == 1 
+                                                       & aff_shared_noincben ==0 & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 & year == "1314"], 
+                     "PRS, no pensioner HRP, can't afford shared ownership", 
+                     results_dir = "./Results/prs_nopen_nosharednotworkless_1314", my_region = "grpd_region1" )
+
+
+
+
+
 #More LIPR compare plots, this time cf to all working age households ####
 des1315_nosharenopen <- update(des1315_nosharenopen, GVTREGN = factor(GVTREGN ))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "GVTREGN", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "GVTREGN", 
                           var_levels = c("GVTREGNNorth East", "GVTREGNNorth West", "GVTREGNYorks & Humber", "GVTREGNEast Midlands", 
                                          "GVTREGNWest Midlands", "GVTREGNEast", "GVTREGNLondon", "GVTREGNSouth East", "GVTREGNSouth West"),
                           var_labels = c("North East", "North West", "Yorks & Humber", "East Midlands", 
@@ -284,19 +373,19 @@ compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Res
                           p_title = "Region - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, HDAGE = factor(HDAGE))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "HDAGE", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "HDAGE", 
                           var_levels = c("HDAGE1", "HDAGE2", "HDAGE3", "HDAGE4", "HDAGE5", "HDAGE6"),
                           var_labels = c("16 to 24", "25 to 34", "35 to 44", "45 to 54", "55 to 64", "65+"),
                           p_title = "Age - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, DVIL04A = factor(DVIL04A))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "DVIL04A", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "DVIL04A", 
                           var_levels = c("DVIL04A1", "DVIL04A2", "DVIL04A3", "DVIL04A4"),
                           var_labels = c("Employed", "Family worker", "Unemployed", "Inactive"), 
                           p_title = "HRP employment (ILO) - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, ECOBU = factor(ECOBU))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "ECOBU", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "ECOBU", 
                           var_levels = c("ECOBU1", "ECOBU2", "ECOBU3", "ECOBU4", "ECOBU5", "ECOBU6", "ECOBU7", "ECOBU8"),
                           var_labels = c("1+ self employed", "Sing/couple all FT", 
                                          "Couple, 1 FT, 1 PT",  "Couple, 1 FT, 1 not working", 
@@ -305,7 +394,7 @@ compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Res
                           p_title = "Employment of household - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, SELFDEMP = factor(SELFDEMP))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "SELFDEMP", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "SELFDEMP", 
                           var_levels = c("SELFDEMP1", "SELFDEMP2", "SELFDEMP3", "SELFDEMP4", "SELFDEMP5","SELFDEMP6", "SELFDEMP7",
                                          "SELFDEMP8", "SELFDEMP9", "SELFDEMP10"),
                           var_labels = c("Full-time", "Part-time", "FT self-employed", "PT self-employed",
@@ -313,324 +402,203 @@ compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Res
                           p_title = "Self-reported HRP situation - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, has_kids16 = factor(has_kids16))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "has_kids16", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "has_kids16", 
                           var_levels = c("has_kids160", "has_kids161"),
                           var_labels = c("No school age kids", "Has school age kids"), 
                           p_title = "Has children - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, bedrooms_needed = factor(bedrooms_needed))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "bedrooms_needed", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "bedrooms_needed", 
                           var_levels = c("bedrooms_needed1", "bedrooms_needed2", "bedrooms_needed3", "bedrooms_needed4", 
                                          "bedrooms_needed5", "bedrooms_needed6"),
                           var_labels = c("1", "2", "3", "4", "5", "6"), 
                           p_title = "Bedrooms needed", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, FAMTYPBU = factor(FAMTYPBU))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "FAMTYPBU", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "FAMTYPBU", 
                           var_levels = c("FAMTYPBU0", "FAMTYPBU1", "FAMTYPBU2", "FAMTYPBU3", "FAMTYPBU4", 
                                          "FAMTYPBU5", "FAMTYPBU6"),
                           var_labels = c("Other", "Pen couple", "Pen single", "Couple + kids", "Couple", "Lone parent", "Single"), 
                           p_title = "Family type", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, single_parent = factor(single_parent))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "single_parent", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "single_parent", 
                           var_levels = c("single_parent0", "single_parent1"),
                           var_labels = c("Not Single parent head", "Single parent head "),
                           p_title = "Is single parent - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, has_disabled = ifelse((has_disabledad ==1 | has_disabledch == 1), 1, 0))
 des1315_nosharenopen <- update(des1315_nosharenopen, has_disabled = factor(has_disabled))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "has_disabled", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "has_disabled", 
                           var_levels = c("has_disabled0", "has_disabled1"),
                           var_labels = c("No disabled", "Has disabled person"), 
                           p_title = "Has disabled adult or child - no pensioner HRP", plot_mode = "var_compare")
 
 des1315_nosharenopen <- update(des1315_nosharenopen, no_savings = ifelse(TOTCAPB3==0, 1, 0))
 des1315_nosharenopen <- update(des1315_nosharenopen, no_savings = factor(no_savings))
-compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_workingage/", variable = "no_savings", 
+compare.LIPR.plots.refine(my_design = des1315_nosharenopen, results_dir = "./Results/nopen_lowincprs_morecompare/", variable = "no_savings", 
                           var_levels = c("no_savings0", "no_savings1"),
                           var_labels = c("No savings", "Has savings"), 
                           p_title = "Has savings - no pensioner HRP", plot_mode = "var_compare")
 
 
-#Overlap between shared ownership and MIS group ####
-dt1315_nosharenopen_1bu <- dt1315_noshare_1bu[is_HRP & (is.na(grossweight) == F) & head_pensioner == 0, ]
 
-
-dt1315_nosharenopen_1bu[ !is.na(aff_shared_noincben) & !is.na(under_ahc_mis), 
-                        aff_shared_under_MIS := ifelse(aff_shared_noincben == 0 & under_ahc_mis == 1, 1, 0)]
-dt1315_nosharenopen_1bu[ !is.na(aff_shared_noincben) & !is.na(under_ahc_mis), 
-                        aff_shared_under_MIS := ifelse(aff_shared_noincben == 1 & under_ahc_mis == 1, 2, aff_shared_under_MIS)]
-dt1315_nosharenopen_1bu[ !is.na(aff_shared_noincben) & !is.na(under_ahc_mis), 
-                        aff_shared_under_MIS := ifelse(aff_shared_noincben == 0 & under_ahc_mis == 0, 3, aff_shared_under_MIS)]
-dt1315_nosharenopen_1bu[ !is.na(aff_shared_noincben) & !is.na(under_ahc_mis), 
-                        aff_shared_under_MIS := ifelse(aff_shared_noincben == 1 & under_ahc_mis == 0, 4, aff_shared_under_MIS)]
-
-
-des1315_prsnosharenopen <- svydesign(ids = ~1, weights = ~grossweight, data = dt1315_nosharenopen_1bu[ grpd_tenure == 1 ,])
-des1315_prsnosharenopen <- update(des1315_prsnosharenopen, aff_shared_under_MIS = factor(aff_shared_under_MIS, levels = c(1,2,3,4),
-                                                                                         labels = c("under MIS and can't own", 
-                                                                                                    "under MIS and can own", 
-                                                                                                    "over MIS and can't own", 
-                                                                                                    "over MIS and can own") ))
-
-svymean(~aff_shared_under_MIS, des1315_prsnosharenopen, na.rm = TRUE)
-
-#svymean(~GVTREGN, design = subset(des1315_prsnosharenopen, aff_shared_under_MIS == 2), na.rm = TRUE)
-svyby(~GVTREGN, by = ~aff_shared_under_MIS, design = des1315_prsnosharenopen, FUN = svymean, na.rm = TRUE)
-
-dt1315_nosharenopen_1bu[ , aff_shared_under_MIS := factor(aff_shared_under_MIS, levels = c(1,2,3,4),
-                                                         labels = c("under MIS and can't own", 
-                                                                    "under MIS and can own", 
-                                                                    "over MIS and can't own", 
-                                                                    "over MIS and can own")) ]
-
-#Plots
-ggplot(dt1315_nosharenopen_1bu[grpd_tenure == 1, ], aes(x = hh_grossinc_nohb_eq, weight = grossweight, fill = aff_shared_under_MIS)) +
-  #geom_freqpoly( aes(group = factor(aff_shared_noincben)))
-  geom_histogram(binwidth = 1000) +
-  theme( legend.position = "top", panel.background = element_rect(fill = "white"),
-         panel.grid.major = element_line(colour = "grey85")) +
-  ggtitle("Gross equivalised household income - HB: PRS, no pensioner HRP") +
-  xlim(-100, 75000) + facet_grid( grpd_region1 ~ .)
-ggsave(filename = "./prs_nopen_MISownoverlap/objoverlap_hhgrossinc_nohb_eq.png")
-
-ggplot(dt1315_nosharenopen_1bu[grpd_tenure == 1, ], aes(x = hh_grossinc_nohb, weight = grossweight, fill = aff_shared_under_MIS)) +
-  #geom_freqpoly( aes(group = factor(aff_shared_noincben)))
-  geom_histogram(binwidth = 1000) +
-  theme( legend.position = "top", panel.background = element_rect(fill = "white"),
-         panel.grid.major = element_line(colour = "grey85")) +
-  ggtitle("Gross household income - HB: PRS, no pensioner HRP") +
-  xlim(-100, 75000) + facet_grid( grpd_region1 ~ .)
-ggsave(filename = "./prs_nopen_MISownoverlap/objoverlap_hhgrossinc_nohb.png")
-
-ggplot(dt1315_nosharenopen_1bu[grpd_tenure == 1, ], aes(x = hh_grossinc_noincben_eq, weight = grossweight, fill = aff_shared_under_MIS)) +
-  #geom_freqpoly( aes(group = factor(aff_shared_noincben)))
-  geom_histogram(binwidth = 1000) +
-  theme( legend.position = "top", panel.background = element_rect(fill = "white"),
-         panel.grid.major = element_line(colour = "grey85")) +
-  ggtitle("Gross equivalised household income - income related benefits: PRS, no pensioner HRP") +
-  xlim(-100, 75000) + facet_grid( grpd_region1 ~ .)
-ggsave(filename = "./prs_nopen_MISownoverlap/objoverlap_hhgrossinc_noincben_eq.png")
-
-ggplot(dt1315_nosharenopen_1bu[grpd_tenure == 1, ], aes(x = hh_grossinc_noincben, weight = grossweight, fill = aff_shared_under_MIS)) +
-  #geom_freqpoly( aes(group = factor(aff_shared_noincben)))
-  geom_histogram(binwidth = 1000) +
-  theme( legend.position = "top", panel.background = element_rect(fill = "white"),
-         panel.grid.major = element_line(colour = "grey85")) +
-  ggtitle("Gross household income - income related benefits: PRS, no pensioner HRP") +
-  xlim(-100, 75000) + facet_grid( grpd_region1 ~ .)
-ggsave(filename = "./prs_nopen_MISownoverlap/objoverlap_hhgrossinc_noincben.png")
 
 
 
 
 ## JAM group define: 2-5th percentile of different income distributions, for all non-pension HRP, non-shared households ####
-dt1315_nosharenopen <- dt1315_noshare[head_pensioner == 0, ]
 
-#rank households - 10% percentiles, gross equivalised household income ####
-pc10val_hhgreqinc_nosharenopen <- calculate.percentile.thresholds(DT = dt1315_nosharenopen, distr_var = ~hh_grossinc_eq, 
-                                                                 region_form = ~GVTREGN, perc_width = "10")
-dt1315_nosharenopen <- assign.percentile(dt1315_nosharenopen, pc10val_hhgreqinc_nosharenopen, "hh_grossinc_eq", perc_width = "10")
-colnames(dt1315_nosharenopen)[283] <- "pc10position_hhgreqinc_reg"
-colnames(dt1315_nosharenopen)[284] <- "pc10position_hhgreqinc_nat"
+#rank households - 10% percentiles, gross equivalised household income #
+pc10val_hhgreqinc_nosharenopen <- calculate.percentile.thresholds(DT = dt1315_noshare_1bu_nopen[year == "1415", ], 
+                                                                  distr_var = ~hh_grossinc_eq, 
+                                                                  region_form = ~GVTREGN, perc_width = "10")
+dt1315_noshare_1bu_nopen <- assign.percentile(dt1315_noshare_1bu_nopen[year == "1415", ], 
+                                              pc10val_hhgreqinc_nosharenopen, 
+                                              "hh_grossinc_eq", perc_width = "10")
+setnames(dt1315_noshare_1bu_nopen, "pc10position_reg", "pc10position_hhgreqinc_reg")
+setnames(dt1315_noshare_1bu_nopen, "pc10position_nat", "pc10position_hhgreqinc_nat")
 
 #rank households - 10% percentiles, gross equivalised household income -hb, equivalised
-pc10val_hhgreqinc_nohb_nosharenopen <- calculate.percentile.thresholds(DT = dt1315_nosharenopen, distr_var = ~hh_grossinc_nohb_eq, 
-                                                                  region_form = ~GVTREGN, perc_width = "10")
-dt1315_nosharenopen <- assign.percentile(dt1315_nosharenopen, pc10val_hhgreqinc_nohb_nosharenopen, "hh_grossinc_nohb_eq", perc_width = "10")
-colnames(dt1315_nosharenopen)[287] <- "pc10position_hhgreqincnohb_reg"
-colnames(dt1315_nosharenopen)[288] <- "pc10position_hhgreqincnohb_nat"
+pc10val_hhgreqinc_nohb_nosharenopen <- calculate.percentile.thresholds(DT = dt1315_noshare_1bu_nopen[year == "1415", ], 
+                                                                       distr_var = ~hh_grossinc_nohb_eq, 
+                                                                       region_form = ~GVTREGN, perc_width = "10")
+dt1315_noshare_1bu_nopen <- assign.percentile(dt1315_noshare_1bu_nopen[year == "1415", ], 
+                                              pc10val_hhgreqinc_nohb_nosharenopen, 
+                                              "hh_grossinc_nohb_eq", perc_width = "10")
+setnames(dt1315_noshare_1bu_nopen, "pc10position_reg", "pc10position_hhgreqincnohb_reg")
+setnames(dt1315_noshare_1bu_nopen, "pc10position_nat", "pc10position_hhgreqincnohb_nat")
 
-
-#Create flags for JAM definition groups ####
-dt1315_nosharenopen[ , JAMbase_greqinc := ifelse(pc10position_hhgreqinc_nat >= 2 & pc10position_hhgreqinc_nat <= 5, 1, 0 )]
-dt1315_nosharenopen[ , JAMrf_greqinc := ifelse((pc10position_hhgreqinc_nat >= 2 & pc10position_hhgreqinc_nat <= 5) 
+#Create flags for JAM definition groups #
+dt1315_noshare_1bu_nopen[ , JAMbase_greqinc := ifelse(pc10position_hhgreqinc_nat >= 2 & pc10position_hhgreqinc_nat <= 5, 1, 0 )]
+dt1315_noshare_1bu_nopen[ , JAMrf_greqinc := ifelse((pc10position_hhgreqinc_nat >= 2 & pc10position_hhgreqinc_nat <= 5) 
                                                & over20gross_allben == 0, 1, 0 )]
-dt1315_nosharenopen[ , JAMnohb_greqinc := ifelse((pc10position_hhgreqincnohb_nat >= 2 & pc10position_hhgreqincnohb_nat <= 5), 1, 0 )]
-dt1315_nosharenopen[ , JAMnohbrf_greqinc := ifelse((pc10position_hhgreqincnohb_nat >= 2 & pc10position_hhgreqincnohb_nat <= 5) 
+dt1315_noshare_1bu_nopen[ , JAMnohb_greqinc := ifelse((pc10position_hhgreqincnohb_nat >= 2 & pc10position_hhgreqincnohb_nat <= 5), 1, 0 )]
+dt1315_noshare_1bu_nopen[ , JAMnohbrf_greqinc := ifelse((pc10position_hhgreqincnohb_nat >= 2 & pc10position_hhgreqincnohb_nat <= 5) 
                                                       & over20grossnohb_nohbben == 0, 1, 0 )]
 
-dt1315_nosharenopen[ , JAMnohbwork_greqinc := ifelse((pc10position_hhgreqincnohb_nat >= 2 & pc10position_hhgreqincnohb_nat <= 5) 
+dt1315_noshare_1bu_nopen[ , JAMnohbwork_greqinc := ifelse((pc10position_hhgreqincnohb_nat >= 2 & pc10position_hhgreqincnohb_nat <= 5) 
                                                    & hrp_nowork == FALSE, 1, 0 )]
 
+### Sample sizes of JAM groups
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMbase_greqinc == 1 & year == "1415",
+                                         .N, by=.(GVTREGN)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMbase_subsample_size.csv")
 
-#Make tables of hhld characteristics for each definition ####
-#merge in under_ahc_mis definition
-keycols = c("SERNUM","BENUNIT","PERSON", "year")
-setkeyv(dt1315_nosharenopen, keycols)
-setkeyv(dt1315_noshare_1bu, keycols)
-dt1315_nosharenopen <- merge(dt1315_nosharenopen, dt1315_noshare_1bu[, .SD, .SDcols = c("SERNUM","BENUNIT","PERSON", "year", 
-                                                                                        "under_ahc_mis")], 
-                             by = keycols, all.x = TRUE)
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMrf_greqinc == 1 & year == "1415",
+                                          .N, by=.(GVTREGN)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMrf_subsample_size.csv")
 
-dt1315_nosharenopen[ , under_MIS_prs := ifelse(under_ahc_mis == 1 & grpd_tenure == 1, 1, 0)]
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMnohb_greqinc == 1 & year == "1415",
+                                          .N, by=.(GVTREGN)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMnohb_subsample_size.csv")
 
-des1315_nosharenopen <- svydesign(ids = ~1, weights = ~grossweight, data = dt1315_nosharenopen[is_HRP & (is.na(grossweight) == F),])
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMnohbrf_greqinc == 1 & year == "1415",
+                                          .N, by=.(GVTREGN)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMnohbrf_subsample_size.csv")
 
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMnohbwork_greqinc == 1 & year == "1415",
+                                          .N, by=.(GVTREGN)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMnohbwork_subsample_size.csv")
 
-#Proportion of non-pen households in each JAM group ####
-des1315_nosharenopen <- update(des1315_nosharenopen, JAMbase_greqinc = factor(JAMbase_greqinc ==1))
-t_prop_JAMbase_greq <- as.data.frame(svymean(~JAMbase_greqinc, des1315_nosharenopen, na.rm=TRUE))
-setDT(t_prop_JAMbase_greq, keep.rownames = TRUE)[]
-t_prop_JAMbase_greq<- t_prop_JAMbase_greq[2,] 
-colnames(t_prop_JAMbase_greq)[1] <- "definition"
-t_prop_JAMbase_greq$definition <- "JAM baseline"
+#preferred JAM definition sample size
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMnohbrf_greqinc == 1 & year == "1415",
+                                          .N, by=.(grpd_region1)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMnohbrf_subsample_size_grpd.csv")
 
-des1315_nosharenopen <- update(des1315_nosharenopen, grpd_tenure = factor(JAMrf_greqinc ==1))
-t_prop_JAMrf_greq <- as.data.frame(svymean(~JAMrf_greqinc, des1315_nosharenopen, na.rm=TRUE))
-setDT(t_prop_JAMrf_greq, keep.rownames = TRUE)[]
-t_prop_JAMrf_greq<- t_prop_JAMrf_greq[2,] 
-colnames(t_prop_JAMrf_greq)[1] <- "definition"
-t_prop_JAMrf_greq$definition <- "JAM RF"
+#preferred JAM definition prs sample size
 
-des1315_nosharenopen <- update(des1315_nosharenopen, grpd_tenure = factor(JAMnohb_greqinc ==1))
-t_prop_JAMnohb_greq <- as.data.frame(svymean(~JAMnohb_greqinc, des1315_nosharenopen, na.rm=TRUE))
-setDT(t_prop_JAMnohb_greq, keep.rownames = TRUE)[]
-t_prop_JAMnohb_greq<- t_prop_JAMnohb_greq[2,] 
-colnames(t_prop_JAMnohb_greq)[1] <- "definition"
-t_prop_JAMnohb_greq$definition <- "JAM no HB"
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMnohbrf_greqinc == 1 & grpd_tenure == 1 & year == "1415",
+                                          .N, by=.(GVTREGN)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMnohbrfprs_subsample_size.csv")
 
-des1315_nosharenopen <- update(des1315_nosharenopen, grpd_tenure = factor(JAMnohbrf_greqinc ==1))
-t_prop_JAMnohbrf_greq <- as.data.frame(svymean(~JAMnohbrf_greqinc, des1315_nosharenopen, na.rm=TRUE))
-setDT(t_prop_JAMnohbrf_greq, keep.rownames = TRUE)[]
-t_prop_JAMnohbrf_greq<- t_prop_JAMnohbrf_greq[2,] 
-colnames(t_prop_JAMnohbrf_greq)[1] <- "definition"
-t_prop_JAMnohbrf_greq$definition <- "JAM no HB RF"
-
-des1315_nosharenopen <- update(des1315_nosharenopen, grpd_tenure = factor(JAMnohbwork_greqinc ==1))
-t_prop_JAMnohbwork_greq <- as.data.frame(svymean(~JAMnohbwork_greqinc, des1315_nosharenopen, na.rm=TRUE))
-setDT(t_prop_JAMnohbwork_greq, keep.rownames = TRUE)[]
-t_prop_JAMnohbwork_greq<- t_prop_JAMnohbwork_greq[2,] 
-colnames(t_prop_JAMnohbwork_greq)[1] <- "definition"
-t_prop_JAMnohbwork_greq$definition <- "JAM no HB working"
-
-prop_list <- list(t_prop_JAMbase_greq, t_prop_JAMrf_greq, t_prop_JAMnohbrf_greq, t_prop_JAMnohb_greq, t_prop_JAMnohbwork_greq )
-t_prop_JAM<- rbindlist(prop_list, fill = TRUE) 
-rm(prop_list)
-rm(t_prop_JAMbase_greq, t_prop_JAMrf_greq, t_prop_JAMnohbrf_greq, t_prop_JAMnohb_greq, t_prop_JAMnohbwork_greq)
-
-ggplot(na.omit(t_prop_JAM), aes(x = mean, xmin = mean-SE, xmax = mean+SE, y =definition,
-                                     colour = definition)) +
-  geom_point() + geom_segment( aes(x = mean-SE, xend = mean+SE, y = definition,
-                                   yend=definition)) +
-  #scale_colour_manual(values=c("grey19","firebrick3", "cyan4", "darkorange1")) +
-  theme( legend.position = "top", panel.background = element_rect(fill = "white"),
-         panel.grid.major = element_line(colour = "grey85")) +
-  xlab("Prop of non-pensioner HRP households") + guides(colour=FALSE, shape = FALSE) + ylab("JAM definition")+
-  ggtitle("Prop all non-pensioner HRP households in different JAM definitions")
-ggsave(filename = "./nopen_JAMdefs/JAMdefs_propcompare.png")
-
-write.csv(t_prop_JAM, file = "./nopen_JAMdefs/JAMdefs_propcompare.csv")
+t_samplesize <- dt1315_noshare_1bu_nopen[ JAMnohbrf_greqinc == 1 & grpd_tenure == 1 & year == "1415",
+                                          .N, by=.(grpd_region1)]
+write.csv( t_samplesize, file = "./Results/nopen_JAMs_1415/nopenJAMnohbrfprs_subsample_size_grpd.csv")
 
 
+des1315_nosharenopen <- svydesign(ids = ~1, weights = ~grossweight, 
+                                  data = dt1315_noshare_1bu_nopen[is_HRP & (is.na(grossweight) == F), ])
 
 #Prop of each group under AHC MIS private renters #### 
-des1315_nosharenopen <- update(des1315_nosharenopen, under_MIS_prs = factor(under_MIS_prs))
-compare.JAM.plots(my_design = des1315_nosharenopen, results_dir = "./nopen_JAMdefs/", variable = "under_MIS_prs", 
-                  p_title = "Prop of JAM who are private renters under MIS - no pensioner HRP", plot_mode = "proportion")
-
-des1315_nosharenopen <- update(des1315_nosharenopen, no_shared_prs = ifelse(aff_shared_noincben == 0 & grpd_tenure == 1, 1, 0 ))
-#Above should be done in the dataset, not in survey design
-des1315_nosharenopen <- update(des1315_nosharenopen, no_shared_prs = factor(no_shared_prs))
-compare.JAM.plots(my_design = des1315_nosharenopen, results_dir = "./nopen_JAMdefs/", variable = "no_shared_prs", 
-                  p_title = "Prop of JAM who are private renters and can't afford shared ownership - no pensioner HRP", plot_mode = "proportion")
-
-compare.JAM.plots(my_design = subset(des1315_nosharenopen, grpd_tenure == 1), results_dir = "./nopen_JAMdefs/", variable = "under_MIS_prs", 
-                  p_title = "Prop of private renting JAM who are private renters under MIS - no pensioner HRP", plot_mode = "proportion")
-
-
+# des1315_nosharenopen <- update(des1315_nosharenopen, under_MIS_prs = factor(under_MIS_prs))
+# compare.JAM.plots(my_design = des1315_nosharenopen, results_dir = "./nopen_JAMdefs/", variable = "under_MIS_prs", 
+#                   p_title = "Prop of JAM who are private renters under MIS - no pensioner HRP", plot_mode = "proportion")
+# 
+# des1315_nosharenopen <- update(des1315_nosharenopen, no_shared_prs = ifelse(aff_shared_noincben == 0 & grpd_tenure == 1, 1, 0 ))
+# #Above should be done in the dataset, not in survey design
+# des1315_nosharenopen <- update(des1315_nosharenopen, no_shared_prs = factor(no_shared_prs))
+# compare.JAM.plots(my_design = des1315_nosharenopen, results_dir = "./nopen_JAMdefs/", variable = "no_shared_prs", 
+#                   p_title = "Prop of JAM who are private renters and can't afford shared ownership - no pensioner HRP", plot_mode = "proportion")
+# 
+# compare.JAM.plots(my_design = subset(des1315_nosharenopen, grpd_tenure == 1), results_dir = "./nopen_JAMdefs/", variable = "under_MIS_prs", 
+#                   p_title = "Prop of private renting JAM who are private renters under MIS - no pensioner HRP", plot_mode = "proportion")
 
 
+### what % of under AHC MIS/can't afford shared ownership is in the JAM group? ####
+des1315_nosharenopen <- update(des1315_nosharenopen, JAMbase_greqinc = factor(JAMbase_greqinc))
+svymean(~JAMbase_greqinc, 
+        design = subset(des1315_nosharenopen, year == "1415" & grpd_tenure == 1 & under_ahc_mis == 1), na.rm = TRUE)
+svytotal(~JAMbase_greqinc, 
+        design = subset(des1315_nosharenopen, year == "1415" & grpd_tenure == 1 & under_ahc_mis == 1), na.rm = TRUE)
+
+des1315_nosharenopen <- update(des1315_nosharenopen, JAMnohbrf_greqinc = factor(JAMnohbrf_greqinc))
+svymean(~JAMnohbrf_greqinc, 
+        design = subset(des1315_nosharenopen, year == "1415" & grpd_tenure == 1 & under_ahc_mis == 1), na.rm = TRUE)
+svytotal(~JAMnohbrf_greqinc, 
+         design = subset(des1315_nosharenopen, year == "1415" & grpd_tenure == 1 & under_ahc_mis == 1), na.rm = TRUE)
 
 
-
-
-### what % of obj group is in each def? ####
-des1315_prsnosharenopen <- update(des1315_prsnosharenopen, JAMbase_greqinc = factor(JAMbase_greqinc))
-svymean(~JAMbase_greqinc, design = subset(des1315_prsnosharenopen, under_ahc_mis == 1), na.rm = TRUE)
-
-
-des1315_prsnosharenopen <- update(des1315_prsnosharenopen, JAMrf_greqinc = factor(JAMrf_greqinc))
-svymean(~JAMrf_greqinc, design = subset(des1315_prsnosharenopen, under_ahc_mis == 1), na.rm = TRUE)
-
-des1315_prsnosharenopen <- update(des1315_prsnosharenopen, JAMnohb_greqinc = factor(JAMnohb_greqinc))
-svymean(~JAMnohb_greqinc, design = subset(des1315_prsnosharenopen, under_ahc_mis == 1), na.rm = TRUE)
-
-des1315_prsnosharenopen <- update(des1315_prsnosharenopen, JAMnohbwork_greqinc = factor(JAMnohbwork_greqinc))
-svymean(~JAMnohbwork_greqinc, design = subset(des1315_prsnosharenopen, under_ahc_mis == 1), na.rm = TRUE)
-
-des1315_prsnosharenopen <- update(des1315_prsnosharenopen, JAMnohbrf_greqinc = factor(JAMnohbrf_greqinc))
-svymean(~JAMnohbrf_greqinc, design = subset(des1315_prsnosharenopen, under_ahc_mis == 1), na.rm = TRUE)
-
-des1315_prsnosharenopen <- update(des1315_prsnosharenopen, JAMbase_greqinc = factor(JAMbase_greqinc))
-svymean(~JAMbase_greqinc, design = subset(des1315_prsnosharenopen, under_ahc_mis == 1), na.rm = TRUE)
-
-
-svymean(~JAMbase_greqinc, design = subset(des1315_prsnosharenopen, aff_shared_noincben == 0), na.rm = TRUE)
-svymean(~JAMrf_greqinc, design = subset(des1315_prsnosharenopen, aff_shared_noincben == 0), na.rm = TRUE)
-svymean(~JAMnohb_greqinc, design = subset(des1315_prsnosharenopen, aff_shared_noincben == 0), na.rm = TRUE)
-svymean(~JAMnohbwork_greqinc, design = subset(des1315_prsnosharenopen, aff_shared_noincben == 0), na.rm = TRUE)
-svymean(~JAMnohbrf_greqinc, design = subset(des1315_prsnosharenopen, aff_shared_noincben == 0), na.rm = TRUE)
+svymean(~JAMbase_greqinc, design = subset(des1315_nosharenopen, 
+                                          year == "1415" & grpd_tenure == 1 & aff_shared_noincben == 0), na.rm = TRUE)
+svymean(~JAMnohbrf_greqinc, design = subset(des1315_nosharenopen, 
+                                            year == "1415" & grpd_tenure == 1 & aff_shared_noincben == 0), na.rm = TRUE)
 
 
 
-#% of working age households fitting JAM defs & PRS ####
-svytotal(~JAMrf_greqinc, des1315_nosharenopen, na.rm = TRUE)
 
-des1315_nosharenopen <- update(des1315_nosharenopen, JAMbase_prs = ifelse(JAMbase_greqinc == 1 & grpd_tenure ==1, 1, 0))
-des1315_nosharenopen <- update(des1315_nosharenopen, JAMbase_prs = factor(JAMbase_prs))
-svymean(~JAMbase_prs, des1315_nosharenopen, na.rm = TRUE)
-svytotal(~JAMbase_prs, des1315_nosharenopen, na.rm = TRUE)
+### financial strain of 'low-to-middle income renters' ####
+des1315_nosharenopen <- update(des1315_nosharenopen, OAEXPNS = factor(OAEXPNS))
+plot.survey.grpdregion(my_design = subset(des1315_nosharenopen, 
+                                          JAMbase_greqinc == 1 & grpd_tenure == 1 & year == "1415"), 
+                       "./Results/nopen_JAMs_1415", "OAEXPNS", 
+                       var_levels = c("OAEXPNS1", "OAEXPNS2"),
+                       var_labels = c("Could afford", "Couldn't afford"),
+                       p_title = "Could afford a £200 expense", region = "grpd_region1")
 
-des1315_nosharenopen <- update(des1315_nosharenopen, JAMnohbrf_prs = ifelse(JAMnohbrf_greqinc == 1 & grpd_tenure ==1, 1, 0))
-des1315_nosharenopen <- update(des1315_nosharenopen, JAMnohbrf_prs = factor(JAMnohbrf_prs))
-svymean(~JAMnohbrf_prs, des1315_nosharenopen, na.rm = TRUE)
-svytotal(~JAMnohbrf_prs, des1315_nosharenopen, na.rm = TRUE)
+des1315_nosharenopen <- update(des1315_nosharenopen, ADDMON = factor(ADDMON))
+plot.survey.grpdregion(my_design = subset(des1315_nosharenopen, 
+                                          JAMbase_greqinc == 1 & grpd_tenure == 1 & year == "1415"), 
+                       "./Results/nopen_JAMs_1415", "ADDMON", 
+                       var_levels = c("ADDMON1", "ADDMON2", "ADDMON3", "ADDMON4"),
+                       var_labels = c("Do this", "Like to but can't afford", "Don't want to",  "Does not apply" ),
+                       p_title = "Can save £10 a month", region = "grpd_region1")
 
-svyquantile(~hh_grossinc, design = subset(des1315_prsnosharenopen, aff_shared_noincben == 0), quantiles = 0.5, na.rm=TRUE)
-svyquantile(~hh_grossinc, design = subset(des1315_prsnosharenopen, under_ahc_mis == 1 ), quantiles = 0.5, na.rm=TRUE)
-svyquantile(~hh_grossinc, design = subset(des1315_prsnosharenopen, JAMbase_greqinc == 1 ), quantiles = 0.5, na.rm=TRUE)
-svyquantile(~hh_grossinc, design = subset(des1315_prsnosharenopen, JAMnohbrf_greqinc == 1 ), quantiles = 0.5, na.rm=TRUE)
-
-# Overlap group - JAM + objective def, proportion of working age
-svymean(~(JAMbase_prs & under_MIS_prs), des1315_nosharenopen, na.rm = TRUE)
-svytotal(~(JAMbase_prs & under_MIS_prs), des1315_nosharenopen, na.rm = TRUE)
-
-svymean(~(JAMnohbrf_prs & under_MIS_prs), des1315_nosharenopen, na.rm = TRUE)
-svytotal(~(JAMnohbrf_prs & under_MIS_prs), des1315_nosharenopen, na.rm = TRUE)
-
-svyquantile(~hh_grossinc, design = subset(des1315_nosharenopen, JAMnohbrf_prs ==1 &under_ahc_mis == 1 ), quantiles = 0.5, na.rm=TRUE)
-
-svymean(~(JAMbase_prs & no_shared_prs), des1315_nosharenopen, na.rm = TRUE)
-svytotal(~(JAMbase_prs & no_shared_prs), des1315_nosharenopen, na.rm = TRUE)
-
-svymean(~(JAMnohbrf_prs & no_shared_prs), des1315_nosharenopen, na.rm = TRUE)
-svytotal(~(JAMnohbrf_prs & no_shared_prs), des1315_nosharenopen, na.rm = TRUE)
-
-#overlap plots
-des1315_nosharenopen <- update(des1315_nosharenopen, shared_JAM = ifelse(aff_shared_noincben == 0 & JAMnohbrf_greqinc == 1, 1, 0))
+plot.survey.grpdregion(my_design = subset(des1315_nosharenopen, 
+                                          JAMbase_greqinc == 1 & grpd_tenure == 1 & year == "1415"), 
+                       "./Results/nopen_JAMs_1415", "ADDMON", 
+                       var_levels = c("ADDMON1", "ADDMON2", "ADDMON3", "ADDMON4"),
+                       var_labels = c("Do this", "Like to but can't afford", "Don't want to",  "Does not apply" ),
+                       p_title = "Can save £10 a month - numbers", svy_fun = svytotal, region = "grpd_region1")
 
 
-# proportion of objective definition captured by JAM
+#median gross incomes for prs under AHC MIS, can't afford shared ownership and JAM groups ####
 
-svymean(~(JAMbase_prs), design = subset(des1315_nosharenopen, under_MIS_prs == 1), na.rm = TRUE)
-svymean(~(JAMrf_greqinc == 1 & grpd_tenure == 1), design = subset(des1315_nosharenopen, under_MIS_prs == 1), na.rm = TRUE)
-svymean(~(JAMnohb_greqinc == 1 & grpd_tenure == 1), design = subset(des1315_nosharenopen, under_MIS_prs == 1), na.rm = TRUE)
-svymean(~(JAMnohbwork_greqinc == 1 & grpd_tenure == 1), design = subset(des1315_nosharenopen, under_MIS_prs == 1), na.rm = TRUE)
-svymean(~(JAMnohbrf_prs), design = subset(des1315_nosharenopen, under_MIS_prs == 1), na.rm = TRUE)
-
-svymean(~(JAMbase_prs), design = subset(des1315_nosharenopen, no_shared_prs == 1), na.rm = TRUE)
-svymean(~(JAMrf_greqinc == 1 & grpd_tenure == 1), design = subset(des1315_nosharenopen, no_shared_prs == 1), na.rm = TRUE)
-svymean(~(JAMnohb_greqinc == 1 & grpd_tenure == 1), design = subset(des1315_nosharenopen, no_shared_prs == 1), na.rm = TRUE)
-svymean(~(JAMnohbwork_greqinc == 1 & grpd_tenure == 1), design = subset(des1315_nosharenopen, no_shared_prs == 1), na.rm = TRUE)
-svymean(~(JAMnohbrf_prs), design = subset(des1315_nosharenopen, no_shared_prs == 1), na.rm = TRUE)
+svyquantile(~hh_grossinc, design = subset(des1315_nosharenopen, 
+                                          year == "1415" & grpd_tenure == 1 & aff_shared_noincben == 0), 
+            quantiles = 0.5, na.rm=TRUE)
+svyquantile(~hh_grossinc, design = subset(des1315_nosharenopen, 
+                                          year == "1415" & grpd_tenure == 1 & under_ahc_mis == 1 ), 
+            quantiles = 0.5, na.rm=TRUE)
+svyquantile(~hh_grossinc, design = subset(des1315_nosharenopen, 
+                                          year == "1415" & grpd_tenure == 1 & JAMbase_greqinc == 1 ), 
+            quantiles = 0.5, na.rm=TRUE)
+svyquantile(~hh_grossinc, design = subset(des1315_nosharenopen, 
+                                          year == "1415" & grpd_tenure == 1 & JAMnohbrf_greqinc == 1 ), 
+            quantiles = 0.5, na.rm=TRUE)
 
 
 
-#prop multiple benu
-ftable(svyby(formula = ~factor(multiple_benu), by = ~GVTREGN, design = desall_1415, FUN = svymean, na.rm = TRUE))
-desall_1415 <- update(desall_1415, BENUNITS = factor(BENUNITS))
-ftable(svyby(formula = ~BENUNITS, by = ~GVTREGN, design = desall_1415, FUN = svymean, na.rm = TRUE))
+
 
 

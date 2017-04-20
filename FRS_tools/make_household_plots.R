@@ -10,6 +10,9 @@ make.household.plots <- function(my_design, my_dt, subset, results_dir, my_regio
   t_regions<- as.data.frame(svytotal(~GVTREGN, design = my_design, ci = TRUE, na.rm = TRUE))
   write.csv( t_regions, file = paste0(results_dir, "/number_by_region.csv"))
   
+  t_regions<- as.data.frame(svytotal(~grpd_region1, design = my_design, ci = TRUE, na.rm = TRUE))
+  write.csv( t_regions, file = paste0(results_dir, "/number_by_grpdregion.csv"))
+  
   #incomes
   inc_p <- ggplot(my_dt[ ], 
                   aes(x = hh_grossinc, weight = grossweight)) +
@@ -51,6 +54,14 @@ make.household.plots <- function(my_design, my_dt, subset, results_dir, my_regio
   
   #Calculate some income means
   plot.survey.grpdregion(my_design, results_dir, "hh_grossinc", p_title = "hh_grossinc_mean", region = "GVTREGN", p_type = "none")
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc_noincben", p_title = "hh_grossnoincben_mean", region = "GVTREGN", p_type = "none")
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc_earn", p_title = "hh_grossearn_mean", region = "GVTREGN", p_type = "none")
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc_nohb", p_title = "hh_grossnohb_mean", region = "GVTREGN", p_type = "none")
+  
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc", p_title = "hh_grossinc_mean_grpd", region = "grpd_region1", p_type = "none")
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc_noincben", p_title = "hh_grossnoincben_mean_grpd", region = "grpd_region1", p_type = "none")
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc_earn", p_title = "hh_grossearn_mean_grpd", region = "grpd_region1", p_type = "none")
+  plot.survey.grpdregion(my_design, results_dir, "hh_grossinc_nohb", p_title = "hh_grossnohb_mean_grpd", region = "grpd_region1", p_type = "none")
   
   # Age
   my_design <- update(my_design, HDAGE = factor(HDAGE))
@@ -80,13 +91,13 @@ make.household.plots <- function(my_design, my_dt, subset, results_dir, my_regio
                                                              "Workless, head/spouse unemployed", "Workless, inactive" ), 
                                               p_title = "Employment of household", region = my_region, p_type = "hbar")
   
-  # #SELFDEMP of head of households for inactive households
+  #SELFDEMP of head of households for inactive households
   # plot.survey.grpdregion(my_design = subset(my_design, ECOBU == 8), results_dir, "SELFDEMP", var_levels = c("SELFDEMP1", "SELFDEMP2", "SELFDEMP3", "SELFDEMP4", "SELFDEMP5",
-  #                                                                                                          "SELFDEMP6", "SELFDEMP7", "SELFDEMP8", "SELFDEMP9", "SELFDEMP10"),
-  #                        var_labels = c("Full-time", "Part-time", "FT self-employed", "PT self-employed",
-  #                                       "Unemployed", "Student", "Family home", "Disabled", "Retired", "Other"), 
-  #                        p_title = "Self-reported situation, inactive", region = my_region)
-  
+  #                                                                                                         "SELFDEMP6", "SELFDEMP7", "SELFDEMP8", "SELFDEMP9", "SELFDEMP10"),
+  #                       var_labels = c("Full-time", "Part-time", "FT self-employed", "PT self-employed",
+  #                                      "Unemployed", "Student", "Family home", "Disabled", "Retired", "Other"),
+  #                       p_title = "Self-reported situation, inactive", region = my_region)
+
   #ILO employment of head of household
   my_design <- update(my_design, DVIL04A = factor(DVIL04A))
   plot.survey.grpdregion(my_design, results_dir, "DVIL04A", var_levels = c("DVIL04A1", "DVIL04A2", "DVIL04A3", "DVIL04A4"),

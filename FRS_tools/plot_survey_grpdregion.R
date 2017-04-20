@@ -14,8 +14,13 @@ plot.survey.grpdregion <- function(my_design, results_dir, variable, var_levels 
   )
   
   totform <- reformulate(termlabels = c(variable))
+  
+
   t_total <- as.data.frame(ftable(svymean(totform, design = my_design, na.rm = TRUE))
   )
+  
+  
+ 
   
   t_total$region <- "England"
   t_total <- dcast(t_total, region + Var1 ~ Var2, value.var = "Freq")

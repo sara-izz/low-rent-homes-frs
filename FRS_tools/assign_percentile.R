@@ -189,7 +189,7 @@ assign.percentile <- function(data_DT, pc_reg_data_DT, dist_var, perc_width){
     
     data_DT[ , pc10position_nat := ordered(NA, levels = c(1,2,3,4,5,6,7,8,9,10))]
     
-    print(data_DT[ ifelse((get(dist_var) >= 0 & get(dist_var) < pc10_nat), 1, pc10position_nat ), ])
+    #print(data_DT[ ifelse((get(dist_var) >= 0 & get(dist_var) < pc10_nat), 1, pc10position_nat ), ])
     
     
     data_DT[ , pc10position_nat := ifelse((get(dist_var) >= 0 & get(dist_var) < pc10_nat), 1, pc10position_nat )]

@@ -7,12 +7,12 @@ compare.LIPR.plots.refine <- function(my_design, results_dir, variable, var_leve
   if(plot_mode == "proportion"){
 
 
-    t_noshared <- as.data.frame(svymean(as.formula(paste("~", variable)), 
-                                       design = subset(my_design, aff_shared_noincben == 0 & grpd_tenure == 1),na.rm = TRUE)) 
-    setDT(t_noshared, keep.rownames = TRUE)[]
-    t_noshared <- t_noshared[2,] 
-    colnames(t_noshared)[1] <- "definition"
-    t_noshared$definition <- "No shared ownership PRS"
+    # t_noshared <- as.data.frame(svymean(as.formula(paste("~", variable)), 
+    #                                    design = subset(my_design, aff_shared_noincben == 0 & grpd_tenure == 1),na.rm = TRUE)) 
+    # setDT(t_noshared, keep.rownames = TRUE)[]
+    # t_noshared <- t_noshared[2,] 
+    # colnames(t_noshared)[1] <- "definition"
+    # t_noshared$definition <- "No shared ownership PRS"
     
     t_ahc_mis <- as.data.frame(svymean(as.formula(paste("~", variable)), 
                                        design = subset(my_design, under_ahc_mis == 1 & grpd_tenure == 1),na.rm = TRUE)) 
@@ -37,6 +37,14 @@ compare.LIPR.plots.refine <- function(my_design, results_dir, variable, var_leve
     colnames(t_nosharedhrpwork)[1] <- "definition"
     t_nosharedhrpwork$definition <- "No shared ownership PRS HRP work"
     
+    t_nosharedwork <- as.data.frame(svymean(as.formula(paste("~", variable)), 
+                                               design = subset(my_design, aff_shared_noincben == 0 & grpd_tenure == 1 
+                                                               & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 ),na.rm = TRUE)) 
+    setDT(t_nosharedwork, keep.rownames = TRUE)[]
+    t_nosharedwork<- t_nosharedwork[2,] 
+    colnames(t_nosharedwork)[1] <- "definition"
+    t_nosharedwork$definition <- "No shared ownership PRS not workless"
+    
     t_allworkage <- as.data.frame(svymean(as.formula(paste("~", variable)), 
                                               design = my_design,na.rm = TRUE)) 
     setDT(t_allworkage, keep.rownames = TRUE)[]
@@ -45,10 +53,10 @@ compare.LIPR.plots.refine <- function(my_design, results_dir, variable, var_leve
     t_allworkage$definition <- "All working age"
 
     
-    table_list <- list(t_noshared, t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_allworkage)
+    table_list <- list(t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_nosharedwork, t_allworkage)
     t_prop<- rbindlist(table_list, fill = TRUE) 
     rm(table_list)
-    rm(t_noshared, t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_allworkage)
+    rm(t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_nosharedwork, t_allworkage)
     
     
     plot_a <- ggplot(na.omit(t_prop), aes(x = mean, xmin = mean-SE, xmax = mean+SE, y =definition,
@@ -97,15 +105,22 @@ compare.LIPR.plots.refine <- function(my_design, results_dir, variable, var_leve
     colnames(t_nosharedhrpwork)[1] <- variable
     t_nosharedhrpwork$definition <- "No shared ownership HRP work PRS"
     
+    t_nosharedwork <- as.data.frame(svymean(as.formula(paste("~", variable)), 
+                                               design = subset(my_design, aff_shared_noincben == 0 & grpd_tenure == 1 
+                                                               & ECOBU!=6 & ECOBU!=7 & ECOBU!=8 ), na.rm=TRUE))
+    setDT(t_nosharedwork, keep.rownames = TRUE)[]
+    colnames(t_nosharedwork)[1] <- variable
+    t_nosharedwork$definition <- "No shared ownership not workless PRS"
+    
     t_allworkage <- as.data.frame(svymean(as.formula(paste("~", variable)), design = my_design, na.rm=TRUE))
     setDT(t_allworkage, keep.rownames = TRUE)[]
     colnames(t_allworkage)[1] <- variable
     t_allworkage$definition <- "All working age"
     
-    table_list <- list(t_noshared, t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_allworkage)
+    table_list <- list(t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_nosharedwork, t_allworkage)
     t_comp<- rbindlist(table_list, fill = TRUE) 
     rm(table_list)
-    rm(t_noshared, t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_allworkage)
+    rm(t_ahc_mis, t_nosharedbenlim, t_nosharedhrpwork, t_nosharedwork, t_allworkage)
     
     t_comp[, (variable) := factor( get(variable), levels = var_levels, labels = var_labels)]
     
